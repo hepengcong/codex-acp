@@ -9,10 +9,11 @@
 >   Maintenance work lands on top of it through pull requests inside this fork.
 > - **Provenance:** [`PROVENANCE.json`](PROVENANCE.json) records the upstream repository, tag,
 >   commit, npm package and tarball integrity, license and copyright holder.
-> - **Patches:** every change that affects the bundled `dist/index.js` gets an entry in
->   `PROVENANCE.json` → `localPatches` (`id`, `summary`, `files`, `upstreamRef` or `null`,
->   `commit`), and each modified source file carries a notice saying it was changed here.
->   The list is empty today: the source tree is upstream `v2.1.1` unchanged.
+> - **Patches:** every change to upstream source or test files gets an entry in
+>   `PROVENANCE.json` → `localPatches` (`id`, `summary`, `files`, `reason`, `affectsArtifact`,
+>   `upstreamBase`, `upstreamRef` or `null`), and each modified file carries a notice at the top
+>   saying it was changed here. Today there is one test-only patch (`test-skip-binary`); the
+>   bundled source is upstream `v2.1.1` unchanged.
 > - **Build and checks:** [`build/`](build/) holds a pinned build manifest, a reproducible
 >   two-directory build and the local quality gate (`npm --prefix build run cs:check`).
 >   Evidence of the last run: [`build/EVIDENCE.md`](build/EVIDENCE.md).

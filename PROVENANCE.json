@@ -20,11 +20,31 @@
     "copyright": "Copyright 2025 JetBrains s.r.o."
   },
   "baseBranch": "cs/2.1.1",
-  "localPatches": [],
+  "localPatches": [
+    {
+      "id": "test-skip-binary",
+      "summary": "Tests that start the real Codex binary skip when CODEX_ACP_SKIP_BINARY_TESTS=1. In CodexAcpClient.test.ts they are marked itWithBinary and the shared real-Codex fixture in beforeEach is then not started, so its other 95 tests (mock-only) run without the binary; mcp-session and mcp-config-merge are binary-only and skip as whole suites. No effect when the variable is unset.",
+      "files": [
+        "src/__tests__/CodexACPAgent/CodexAcpClient.test.ts",
+        "src/__tests__/CodexACPAgent/mcp-session.test.ts",
+        "src/__tests__/CodexACPAgent/mcp-config-merge.test.ts"
+      ],
+      "reason": "The local gate does not install @openai/codex (333 MB). Without this patch it had to exclude CodexAcpClient.test.ts as a whole and lost its mock-only regression tests (auth, resume, compaction, goals, cancellation). The skipped binary tests are listed in build/binary-tests.json.",
+      "affectsArtifact": false,
+      "upstreamBase": "68d7d2d5ddfc0ed5746f9f6130892dda685e65dd",
+      "upstreamRef": null
+    }
+  ],
   "nonArtifactChanges": {
     "modifiedUpstreamFiles": [
-      { "path": "README.md", "change": "Prepended the maintenance-fork section. Not bundled into dist/index.js." }
+      {
+        "path": "README.md",
+        "change": "Prepended the maintenance-fork section. Not bundled into dist/index.js."
+      }
     ],
-    "addedFiles": ["PROVENANCE.json", "build/"]
+    "addedFiles": [
+      "PROVENANCE.json",
+      "build/"
+    ]
   }
 }
