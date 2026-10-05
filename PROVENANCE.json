@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "purpose": "Claudestra maintenance fork of codex-acp: where this tree came from and every local change on top of it.",
+  "upstream": {
+    "repository": "https://github.com/agentclientprotocol/codex-acp",
+    "tag": "v2.1.1",
+    "commit": "68d7d2d5ddfc0ed5746f9f6130892dda685e65dd"
+  },
+  "npm": {
+    "package": "@agentclientprotocol/codex-acp",
+    "version": "2.1.1",
+    "tarball": "https://registry.npmjs.org/@agentclientprotocol/codex-acp/-/codex-acp-2.1.1.tgz",
+    "integrity": "sha512-dppZxW3f8kNbTDbR25+lBLtNst5DIC/Sm7GtRF69PI1Ilqv12tDSsIb0hJQW0iNzkx+JdDvX76HOyv5Uibu1qQ==",
+    "gitHead": "68d7d2d5ddfc0ed5746f9f6130892dda685e65dd",
+    "distIndexSha256": "4b76310393d756a0f111687cd9df899720f36f7c59b1eb1d86429484034ff91b"
+  },
+  "license": {
+    "spdx": "Apache-2.0",
+    "file": "LICENSE",
+    "copyright": "Copyright 2025 JetBrains s.r.o."
+  },
+  "baseBranch": "cs/2.1.1",
+  "localPatches": [],
+  "nonArtifactChanges": {
+    "modifiedUpstreamFiles": [
+      { "path": "README.md", "change": "Prepended the maintenance-fork section. Not bundled into dist/index.js." }
+    ],
+    "addedFiles": ["PROVENANCE.json", "build/"]
+  }
+}

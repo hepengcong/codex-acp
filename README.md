@@ -1,5 +1,25 @@
 # ACP adapter for Codex CLI
 
+> **Claudestra maintenance fork.** This repository (`hepengcong/codex-acp`) is a fork of
+> [agentclientprotocol/codex-acp](https://github.com/agentclientprotocol/codex-acp), maintained
+> so that Claudestra can pin the adapter by source
+> (repository + commit) and by artifact fingerprint. It is not an official release channel.
+>
+> - **Base:** branch `cs/2.1.1` is upstream tag `v2.1.1` (commit `68d7d2d5`) with no changes.
+>   Maintenance work lands on top of it through pull requests inside this fork.
+> - **Provenance:** [`PROVENANCE.json`](PROVENANCE.json) records the upstream repository, tag,
+>   commit, npm package and tarball integrity, license and copyright holder.
+> - **Patches:** every change that affects the bundled `dist/index.js` gets an entry in
+>   `PROVENANCE.json` → `localPatches` (`id`, `summary`, `files`, `upstreamRef` or `null`,
+>   `commit`), and each modified source file carries a notice saying it was changed here.
+>   The list is empty today: the source tree is upstream `v2.1.1` unchanged.
+> - **Build and checks:** [`build/`](build/) holds a pinned build manifest, a reproducible
+>   two-directory build and the local quality gate (`npm --prefix build run cs:check`).
+>   Evidence of the last run: [`build/EVIDENCE.md`](build/EVIDENCE.md).
+> - **License:** Apache-2.0, unchanged ([`LICENSE`](LICENSE), Copyright 2025 JetBrains s.r.o.).
+>   Per Apache-2.0 §4(b): this README was modified in this fork (this section was added);
+>   everything below it is upstream text.
+
 [![npm version](https://img.shields.io/npm/v/%40agentclientprotocol%2Fcodex-acp)](https://www.npmjs.com/package/@agentclientprotocol/codex-acp)
 
 Use [OpenAI Codex](https://github.com/openai/codex) from [Agent Client Protocol](https://agentclientprotocol.com/) clients.
