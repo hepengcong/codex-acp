@@ -1,0 +1,37 @@
+{
+  "why": "These tests start the real Codex binary (node_modules/.bin/codex or the bundled @openai/codex). The local gate does not install it: it runs with CODEX_ACP_SKIP_BINARY_TESTS=1 (local patch test-skip-binary) and requires exactly these tests, plus expectedUpstreamSkips, to be skipped. The planned real-combination suite (real Codex CLI + built artifact) takes them over.",
+  "binaryTests": {
+    "src/__tests__/CodexACPAgent/CodexAcpClient.test.ts": [
+      "should throw error without authentication",
+      "should authenticate with key",
+      "should authenticate with CODEX_API_KEY from the environment",
+      "should fall back to OPENAI_API_KEY from the environment",
+      "should report a clear error when the selected API key env var is missing",
+      "should authenticate with a gateway",
+      "should show account in /status for api key auth and hide it for gateway auth",
+      "should map events from dump",
+      "should fail on wrong sessionId",
+      "handles logout command",
+      "handles skills command",
+      "handles mcp command",
+      "handles builtin slash command locally when prompt has attachments",
+      "should fallback to the default model when modelId is null",
+      "should fallback to the model-specific effort when reasoningEffort is null",
+      "should keep a model id that is not in the advertised catalog (custom provider)",
+      "should default the effort for an uncatalogued model when reasoningEffort is null"
+    ],
+    "src/__tests__/CodexACPAgent/mcp-session.test.ts": [
+      "should return configured mcp"
+    ],
+    "src/__tests__/CodexACPAgent/mcp-config-merge.test.ts": [
+      "should preserve the global url-based MCP when ACP passes a command-type MCP with the same name",
+      "should preserve a project url-based MCP when ACP passes a command-type MCP with the same name",
+      "should not filter the conflicting ACP MCP when config filtering is disabled"
+    ]
+  },
+  "expectedUpstreamSkips": {
+    "src/__tests__/scenarios/client-profiles.test.ts": [
+      "records the baseline"
+    ]
+  }
+}

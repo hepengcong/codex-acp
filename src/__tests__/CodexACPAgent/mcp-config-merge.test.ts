@@ -1,4 +1,7 @@
 // noinspection ES6RedundantAwait
+// Modified in the Claudestra maintenance fork (hepengcong/codex-acp), per Apache-2.0 4(b):
+// every test here starts the real Codex binary, so the suite skips when CODEX_ACP_SKIP_BINARY_TESTS=1.
+// No effect when CODEX_ACP_SKIP_BINARY_TESTS is unset. See PROVENANCE.json, localPatches "test-skip-binary".
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import path from "node:path";
@@ -8,7 +11,7 @@ import type {McpServerStdio} from "@agentclientprotocol/sdk";
 import {startCodexConnection} from "../../CodexJsonRpcConnection";
 import {createBaseTestFixture, removeDirectoryWithRetry, type TestFixture} from "../acp-test-utils";
 
-describe('MCP config merge across configured MCP servers and ACP request', { timeout: 40_000 }, () => {
+describe.skipIf(process.env["CODEX_ACP_SKIP_BINARY_TESTS"] === "1")('MCP config merge across configured MCP servers and ACP request', { timeout: 40_000 }, () => {
 
     let codexHome: string;
     let projectPath: string;

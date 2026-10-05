@@ -1,4 +1,8 @@
 // noinspection ES6RedundantAwait
+// Modified in the Claudestra maintenance fork (hepengcong/codex-acp), per Apache-2.0 4(b):
+// the tests that start the real Codex binary use itWithBinary and skip when CODEX_ACP_SKIP_BINARY_TESTS=1,
+// and the shared real-Codex fixture is then not started, so the mock-only tests run without the binary.
+// No effect when CODEX_ACP_SKIP_BINARY_TESTS is unset. See PROVENANCE.json, localPatches "test-skip-binary".
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {CODEX_API_KEY_ENV_VAR, OPENAI_API_KEY_ENV_VAR, type CodexAuthRequest} from "../../CodexAuthMethod";
@@ -21,11 +25,15 @@ import {ModelId} from "../../ModelId";
 import {GOAL_CONTROL_METHOD} from "../../AcpExtensions";
 import type {McpStartupResult} from "../../CodexAppServerClient";
 
+// Set by the fork's local gate, which does not install the Codex binary.
+const SKIP_BINARY_TESTS = process.env["CODEX_ACP_SKIP_BINARY_TESTS"] === "1";
+const itWithBinary = it.skipIf(SKIP_BINARY_TESTS);
+
 describe('ACP server test', { timeout: 40_000 }, () => {
 
     let fixture: TestFixture;
     beforeEach(() => {
-        fixture = createTestFixture();
+        if (!SKIP_BINARY_TESTS) fixture = createTestFixture();
         vi.clearAllMocks();
     });
 
@@ -35,7 +43,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
 
     const ignoredFields = ["thread", "cwd", "id", "createdAt", "path", "threadId", "userAgent", "sandbox",  "conversationId", "origins", "supportedReasoningEfforts", "reasoningEffort", "model", "readOnlyAccess", "approvalsReviewer"];
 
-    it('should throw error without authentication', async () => {
+    itWithBinary('should throw error without authentication', async () => {
         const authFixture = createTestFixture();
         const codexAcpAgent = authFixture.getCodexAcpAgent();
 
@@ -57,7 +65,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await expect(transportDump).toMatchFileSnapshot("data/auth-failed.json");
     });
 
-    it('should authenticate with key', async () => {
+    itWithBinary('should authenticate with key', async () => {
         const keyFixture = createTestFixture();
         const codexAcpAgent = keyFixture.getCodexAcpAgent();
 
@@ -132,7 +140,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         expect(logoutResponse).toEqual({type: "unauthenticated"});
     });
 
-    it('should authenticate with CODEX_API_KEY from the environment', async () => {
+    itWithBinary('should authenticate with CODEX_API_KEY from the environment', async () => {
         const envFixture = createTestFixture();
         const codexAcpAgent = envFixture.getCodexAcpAgent();
         vi.stubEnv(CODEX_API_KEY_ENV_VAR, "CODEX_ENV_TOKEN");
@@ -161,7 +169,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await expect(codexAcpAgent.extMethod("authentication/status", {})).resolves.toEqual({type: "api-key"});
     });
 
-    it('should fall back to OPENAI_API_KEY from the environment', async () => {
+    itWithBinary('should fall back to OPENAI_API_KEY from the environment', async () => {
         const envFixture = createTestFixture();
         const codexAcpAgent = envFixture.getCodexAcpAgent();
         vi.stubEnv(CODEX_API_KEY_ENV_VAR, "");
@@ -190,7 +198,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await expect(codexAcpAgent.extMethod("authentication/status", {})).resolves.toEqual({type: "api-key"});
     });
 
-    it('should report a clear error when the selected API key env var is missing', async () => {
+    itWithBinary('should report a clear error when the selected API key env var is missing', async () => {
         const envFixture = createTestFixture();
         const codexAcpAgent = envFixture.getCodexAcpAgent();
         vi.stubEnv(CODEX_API_KEY_ENV_VAR, "");
@@ -323,7 +331,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
             .rejects.toThrow("Device code authentication requires URL elicitation support");
     });
 
-    it('should authenticate with a gateway', async () => {
+    itWithBinary('should authenticate with a gateway', async () => {
         const gatewayFixture = createTestFixture();
         const codexAcpAgent = gatewayFixture.getCodexAcpAgent();
 
@@ -361,7 +369,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         expect(newSessionResponse.sessionId).toBeDefined();
     });
 
-    it('should show account in /status for api key auth and hide it for gateway auth', async () => {
+    itWithBinary('should show account in /status for api key auth and hide it for gateway auth', async () => {
         const authFixture = createTestFixture();
         const codexAcpAgent = authFixture.getCodexAcpAgent();
 
@@ -1348,7 +1356,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await new Promise((resolve) => setTimeout(resolve, 0));
     }
 
-    it('should map events from dump', async () => {
+    itWithBinary('should map events from dump', async () => {
         fixture.getCodexAppServerClient().onServerNotification = loadNotifications();
 
         const codexAcpAgent = fixture.getCodexAcpAgent();
@@ -1738,7 +1746,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await expect(mockFixture.getCodexConnectionDump(ignoredFields)).toMatchFileSnapshot("data/send-attachments-turn-start.json");
     });
 
-    it('should fail on wrong sessionId', async () => {
+    itWithBinary('should fail on wrong sessionId', async () => {
         const sessionId = "not-existing-session";
 
         await fixture.getCodexAcpAgent().initialize({protocolVersion: 1});
@@ -3517,7 +3525,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         expect(event!.args[0].update.content.text).toBe('Command "/review-branch" requires branch name.');
     });
 
-    it('handles logout command', async () => {
+    itWithBinary('handles logout command', async () => {
         const codexAcpAgent = fixture.getCodexAcpAgent();
         await codexAcpAgent.initialize({protocolVersion: 1});
 
@@ -3708,7 +3716,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         });
     });
 
-    it('handles skills command', async () => {
+    itWithBinary('handles skills command', async () => {
         const codexAcpAgent = fixture.getCodexAcpAgent();
         await codexAcpAgent.initialize({protocolVersion: 1});
 
@@ -3733,7 +3741,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await expect(fixture.getAcpConnectionDump(["sessionId"])).toMatchFileSnapshot("data/command-skills.json");
     });
 
-    it('handles mcp command', async () => {
+    itWithBinary('handles mcp command', async () => {
         const codexAcpAgent = fixture.getCodexAcpAgent();
         await codexAcpAgent.initialize({protocolVersion: 1});
 
@@ -3778,7 +3786,7 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         await expect(fixture.getAcpConnectionDump(["sessionId"])).toMatchFileSnapshot("data/command-mcp.json");
     });
 
-    it('handles builtin slash command locally when prompt has attachments', async () => {
+    itWithBinary('handles builtin slash command locally when prompt has attachments', async () => {
         const codexAcpAgent = fixture.getCodexAcpAgent();
         await codexAcpAgent.initialize({protocolVersion: 1});
 
@@ -3851,22 +3859,22 @@ describe('ACP server test', { timeout: 40_000 }, () => {
         }
     ];
 
-    it('should fallback to the default model when modelId is null', () => {
+    itWithBinary('should fallback to the default model when modelId is null', () => {
         const result = fixture.getCodexAcpClient().createModelId(mockModels, null, 'low');
         expect(result).toEqual(ModelId.create('5.1', 'low'));
     });
 
-    it('should fallback to the model-specific effort when reasoningEffort is null', () => {
+    itWithBinary('should fallback to the model-specific effort when reasoningEffort is null', () => {
         const result = fixture.getCodexAcpClient().createModelId(mockModels, '5.2-codex', null);
         expect(result).toEqual(ModelId.create('5.2-codex', 'medium'));
     });
 
-    it('should keep a model id that is not in the advertised catalog (custom provider)', () => {
+    itWithBinary('should keep a model id that is not in the advertised catalog (custom provider)', () => {
         const result = fixture.getCodexAcpClient().createModelId(mockModels, 'MiniMax-M3', 'high');
         expect(result).toEqual(ModelId.create('MiniMax-M3', 'high'));
     });
 
-    it('should default the effort for an uncatalogued model when reasoningEffort is null', () => {
+    itWithBinary('should default the effort for an uncatalogued model when reasoningEffort is null', () => {
         const result = fixture.getCodexAcpClient().createModelId(mockModels, 'MiniMax-M3', null);
         expect(result).toEqual(ModelId.create('MiniMax-M3', 'medium'));
     });

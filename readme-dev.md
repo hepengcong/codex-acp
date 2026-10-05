@@ -13,6 +13,10 @@ Set `CODEX_PATH` to run a different Codex binary; versions other than the one sp
 - `NO_BROWSER` - hide browser-based ChatGPT auth when set.
 - `APP_SERVER_LOGS` - directory for adapter logs.
 
+### Test environment (Claudestra maintenance fork)
+
+- `CODEX_ACP_SKIP_BINARY_TESTS` - when `1`, tests that need the real Codex binary are skipped and the shared real fixture is not started (the list is pinned in `build/binary-tests.json`; `npm --prefix build run cs:check` sets it). Unset = upstream behavior. Added by the Claudestra fork, see `PROVENANCE.json` `localPatches`.
+
 ### Quick start
 
 #### Develop on Windows?
